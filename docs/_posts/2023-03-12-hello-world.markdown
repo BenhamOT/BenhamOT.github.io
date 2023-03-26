@@ -10,5 +10,4 @@ interesting data projects I've worked on, my observations of data industry trend
 I'm current working as a Data Engineering Consultant at Infinity Works, part of Accenture. In my last 
 couple of projects I've been mostly doing data platform engineering roles focused on AWS Data Engineering 
 and Architecture. Before Infinity Works, I worked as a Data Scientist at a small 
-Manchester based tech consultancy called Intechnica. More details can be found 
-on my [LinkedIn][https://www.linkedin.com/in/oliver-benham/]. 
+Manchester based tech consultancy called Intechnica. 
