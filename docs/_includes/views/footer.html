@@ -1,0 +1,20 @@
+<footer class="site-footer h-card">
+  <data class="u-url" href="{{ "/" | relative_url }}"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+        {%- assign currentYear = 'now' | date: "%Y" -%}
+        {%- assign copyright = site.copyright
+            | replace: '{currentYear}', currentYear
+            | replace: '{author}', site.author
+            | replace: '(c)', '&copy;'
+            | replace: '(p)', '℗'
+            | replace: '(cleft)', '<span class="copyleft">&copy;</span>'
+        -%}
+      <div>{{ copyright }}</div>
+      <div>Follow me on <a title="
+      LinkedIn profile" href="https://www.linkedin.com/in/oliver-benham/">LinkedIn</a> for updates.
+      </div>
+    </div>
+  </div>
+</footer>
