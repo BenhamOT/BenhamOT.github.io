@@ -40,31 +40,36 @@ Once I'd managed to get over the model conversion hurdle and had a nice compress
 app and started the UAT testing. Here we discovered the model was performing poorly compared to the benchmarks we'd established 
 from a dataset of approximately several thousand test images.
 
-My first lesson learned; in any ML project it's best to source training data that as close as possible resembles the
+My first lesson learned; in any ML project it's best to source training data that matches the
 data that the model will see when deployed to production. This sounds quite obvious in hindsight but at the time I 
 didn't think it would be required to use mobile phone screenshots as part of the training data to get reasonable results. 
 This turned out to be a very naive assumption. The concept of a mismatch between your training data and the data that the 
 model is exposed to in production is known in the mlops world as data drift. 
 
-The next step was to try and take the existing model and continue the training, passing on labelled mobile screenshot data. 
-
+The next step was to try and take the existing model and continue the training, using labelled mobile screenshot data. 
 The model made it into production but it wasn't performing to the clients satisfaction. The way the app worked, if any
 screenshots were classified as positive they would be securely sent to the clients servers when an internet connection could be established. 
-The problem was, the client was receiving too many false positives and their team responsible for assessing the positively classified 
-images couldn't get through them all.
+The problem was, the client was receiving too many false positives and the team responsible for assessing the positively classified 
+images wouldn't be able to get through them all as the total number of active devices increased. 
 
 An overarching lesson I learned from this project is that when delivering anything involving ML, it's crucial that everyone
-involved is on the same page about the performance of the model and what the corresponding business implications are. 
+involved is on the same page about the performance of the model and what the corresponding business implications are. Ensuring that
+everyone understood that a false positive rate of 1% meant that out of every 100000 'negative' images the model 
+would still incorrectly classify 1000 of them as positive. 
 
-Finally I decided that I would try and train a new model, using an well defined architecture ... mobilenet ... 
-Why did this turn out to be a good move? Machine Learning has continued to evole repidly over the last decade (just look at where we are now 
-with generative models (GPT-4, LLaMA, stable diffusion, etc) and even in the 3 years since the open source model was produced
-there were many advances that had been made in terms of model architectures ....
+Based on the need to bring the false positive rate down further, I decided that I would try and train a new model. 
+This turned out to be a good move and here's why. Machine Learning has continued to evolve rapidly over the last decade, 
+just look at where we are now with generative models such as GPT-4, LLaMA, stable diffusion, etc, and in the 3 years since 
+the original open source model was developed there had been many advances made in terms of model architectures and efficiency.
+When deploying ML onto an edge device there is always a trade off between model accuracy and device performance. The general
+trend is larger models with more parameters have more capacity and are therefore more likely to be better at whatever 
+they're trained to do, given sufficient training data. However, it's not always possible to embed larger models into 
+edge devices because of limited hardware (memory, battery life etc). 
+
+Thankfully there are something 
+
 
 architecture consideration - capacity vs performance trade off
-
-
-
 
 Lessons learned
 Add complexity when required
