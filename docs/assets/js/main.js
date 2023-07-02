@@ -1,5 +1,4 @@
 
-
 // Fix DOM matches function
 if (!Element.prototype.matches) {
   Element.prototype.matches =
