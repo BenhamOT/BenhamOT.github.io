@@ -16,7 +16,7 @@ Although a lot of excellent mobile development also went into this, my main focu
 classify the screenshots and embedding the model into the app. I won't go into specific details about the purpose of the app
 (to save myself potentially getting into trouble) but I will say that it was to monitor what people where doing on specific phones.
 
-### Implementation
+### Phase 1: Model Embedding
 
 Although I'd consider myself to be a [PyTorch][pytorch] convert (a topic for another day), 
 this project was developed using [TensorFlow][tensorflow] (tf). Originally I'd attempted to use a pre-trained 
@@ -24,6 +24,8 @@ open source model that I found online and so at the start of the project
 the bulk of the work consisted of converting the model into a format such that it could be embedded into the app. This is one 
 area where TensorFlow does come into its own; there is a feature called [TensorFlow Lite][tflite] that
 enables you to convert a model into a compressed .tflite file that can then be embedded onto an edge devices. 
+
+Why embed the modle into the app instead of hosting it online? Offline, online, cost, performance
 
 [tflite]: https://www.tensorflow.org/lite
 [pytorch]: https://pytorch.org/ 
@@ -44,8 +46,10 @@ didn't realise it was necessary to use mobile phone screenshots as part of the t
 This turned out to be a pretty naive assumption. The concept of a mismatch between your training data and the data that the 
 model is exposed to in production is known in the mlops world as data drift. 
 
+### Phase 2: Transfer Learning
+
 The next step was to try and take the existing model and continue the training, using labelled mobile screenshot data. 
-The model made it into production but it wasn't performing to the clients satisfaction. The way the app worked, if any
+The model made it into production but it wasn't performing to the client's satisfaction. The way the app worked, if any
 screenshots were classified as positive they would be securely sent to the clients servers when an internet connection could be established. 
 The problem was, they were receiving too many false positives and the team responsible for assessing the positively classified 
 images wouldn't be able to get through them all as the total number of active devices increased. 
@@ -55,41 +59,52 @@ is on the same page about the performance of the ML application and what the cor
 ensuring that everyone understood that a false positive rate of 1% meant that out of every 100000 'negative' images, the model 
 would still incorrectly classify ~ 1000 of them as positive. 
 
+### Phase 3: Custom Training
+
 Based on the need to further reduce the false positive rate, I decided that I would try and train a new model. 
 Thankfully, this turned out to be a good move. Machine Learning has continued to evolve rapidly over the last decade, 
 just look at where we are now with generative models and LLMs, and in the 3 years since 
 the original open source model was developed there had been many advances made in terms of model architectures and efficiency.
 
-When deploying ML onto an edge device there is a trade off between model performance (how good the model is at it's job) and device performance. 
+When deploying ML onto an edge device there is a trade-off between model performance (how good the model is at it's job) and device performance. 
 The general trend is that larger models with more parameters are more likely to be better at whatever 
 they're trained to do, given sufficient training data. However, it's difficult to embed large models over a certain size,
 in terms of parameters, into edge devices because of hardware limitations (compute, battery life etc). This is likely to 
-be an interesting conundrum faced by people trying to embed LLMs and generative models into edge devices. Fortunately, at the time 
-of development there were a range of model architectures that had been purposely designed for mobile devices. At the time, 
-the overall winner was mobilenetV3 from the [mobilenet][mobilenet] family. Although there are better options nowadays, at the time
-this offered the best trade off between model and device performance.
+be an interesting conundrum faced by people trying to embed LLMs and generative models into edge devices. 
+
+Fortunately, at the time of development there were a range of model architectures that had been purposely designed 
+for mobile devices. At the time, the overall winner was mobilenetV3 from the [mobilenet][mobilenet] family. 
+Although there are better options nowadays, at the time this offered the best trade off between model 
+and device performance. I trained the MobileNetV3 model on AWS Sagemaker, using Sagemaker studio. 
+An example of some of the helper scripts that enabled me to do this can be found [here][sagemaker-repo]
 
 [mobilenet]:https://keras.io/api/applications/mobilenet/
 
-I trained the MobileNetV3 model on AWS Sagemaker, using Sagemaker studio. An example of some of the helper scripts that enabled me to do this can be found [here][sagemaker-repo]. When training models using Sagemaker, you've got 3 different options
-to choose from: 
+### AWS Sagemaker
 
-Use the built in algorithms
+When training models using Sagemaker, you've got 3 different options to choose from: 
+
+Use the built-in algorithms
 
 Use bespoke code that can be run in a pre-built docker container
 
-Provide your own bespoke code and container image.
+Provide your own bespoke code and docker image.
 
-In this specific I went for the second approach, using my own tensorflow code in the Sagemaker provided tensorflow container. 
-This provided the best trade off between flexibility and ease. Historcially I've found the built in algorithms to be a bit
-awkward to configure.
+I decided to go for the second approach, using my own tensorflow code in the Sagemaker provided tensorflow container. 
+There some a few nuances to this approach, but generally I found it to be more straight forward than the other two options. 
+Using a Sagemaker provided tensorflow container was a good trade-off between flexibility and ease. Historically, 
+I've found the built-in algorithms to be a bit awkward to configure and harder to prototype. 
 
 [sagemaker-repo]:https://github.com/BenhamOT/aws-sagemaker-custom-training-example
 
-benefits of using Sagemaker - bayesian optimiation of the hyparameters, distributed training which the trainings runs up
-significantly
+There are a variety of benefits that come from using Sagemaker, although they do come with a potentially chunky cost. 
+You've got access to the best hardware (GPUs), which are required for training most of the larger models we see around nowadays. 
+Training can also be easily distributed across multiple GPUs and therefore training times are dramatically reduced.
+This is a feature I found especially helpful as the model I was training could be trained locally but would take about 10 
+times longer. Hyperparameter tuning is also made easier using Sagemaker; you are able to specify how many training runs you want in total
+and the number of those you want to run in parallel. Sagemaker will then use it's builtin bayesian optimisation algorithm 
+to intelligently search for the most optimal combination of parameters, based on a metric you provide.
 
-The final thing I want to touch on is why the model was embedded into the app and not hosted in the cloud for example. 
-Why embed into the device? Offline, online, cost, performance 
+### The end
 
- 
+3 years on and this application is still running in production, classifying screenshots.
