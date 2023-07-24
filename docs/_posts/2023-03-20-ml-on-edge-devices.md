@@ -9,8 +9,7 @@ tags: computer-vision machine-learning mlops
 ### Intro
 
 In this post (my first, in fact), I'm going to talk about one of the most interesting projects I've worked on over the
-last 5 years. The project's headline: __Can we develop an Android app that classifies screenshots on a mobile phone?__ 
-It sounds fairly simple, but there were some interesting challenges involved.
+last 5 years. The project's headline: __Can we develop an Android app that classifies screenshots on a mobile phone?__
 
 Although a lot of excellent mobile development went into this project, my main focus was developing the computer 
 vision model that would classify the screenshots and embedding the model into the app. I won't go into specific 
@@ -22,12 +21,13 @@ built to monitor what people were doing on specific phones.
 I'd now consider myself to be a [PyTorch][pytorch] convert (a topic for another day), however, this project was developed
 using [TensorFlow][tensorflow] (tf). Initially, I attempted to use a pre-trained open-source model that I found online.
 This is where TensorFlow Lite [tflite] came in handy; it enables you to convert a 
-model into a compressed .tflite file that can then be embedded onto edge devices. 
+model into a compressed .tflite file that can then be embedded onto edge devices.
 
-TODO 
-
-Why embed the model into the app instead of hosting it online? 
-Consider factors such as offline usage, online availability, cost, and performance.
+Why was the model embedded into the app instead of hosted in the cloud? There are a few reasons why
+deploying the model locally on the app was a better solution in our situation. It can be fairly expensive to host 
+a model on AWS; in contrast, it is essentially free to have the same model running locally on the device. It's possible 
+that the device isn't always connected to the internet, but we still want to classify screenshots, without having to
+store a large backlog of images to send to a cloud hosted model.
 
 [tflite]: https://www.tensorflow.org/lite
 [pytorch]: https://pytorch.org/ 
@@ -39,14 +39,14 @@ support for older tf versions. However, with the current tf 2.x API, it's fairly
 use the tflite conversion API or command-line tool.
 
 Once I managed to overcome the model conversion hurdle and had a nice compressed tflite file, we embedded the model
-into the app and started UAT testing. During this phase, we discovered that the model was performing poorly 
-compared to the benchmarks we had established from a dataset of several thousand test images.
+into the app and started UAT testing. We quickly discovered that the model was performing poorly 
+compared to the benchmarks we had established.
 
 My first lesson learned: In any ML project, it's best to source training data that matches the data the 
 model will see when deployed to production. This sounds obvious in hindsight, but at the time I didn't 
 realise it was necessary to use mobile phone screenshots as part of the training data to achieve 
-reasonable results. This turned out to be a naive assumption. The concept of a mismatch between your 
-training data and the data that the model is exposed to in production is known in the MLOps world as data drift.
+reasonable results. This turned out to be a very naive assumption. The concept of a mismatch between your 
+training data and the data that the model is exposed to in production is known in the MLOps world as __data drift__.
 
 ### Phase 2: Transfer Learning
 
@@ -62,17 +62,23 @@ corresponding business implications. In this case, it was important that everyon
 a false positive rate of 1% meant that out of every 100,000 'negative' images, the model 
 would still incorrectly classify approximately 1000 of them as positive. 
 
+![image](../assets/images/mobile-screenshots.png)
+__This image shows how the screenshots were segmented as part of the image pre-processing. This was done to 
+ensure that the images passed to the model maintained their aspect ratio after they were resized. Many models 
+expect the images pass to them to be a fixed high and width (in terms of pixels) and therefore resizing is a 
+common pre-processing step.__
+
 ### Phase 3: Custom Training
 
 Based on the need to further reduce the false positive rate, I decided to train a new bespoke model. 
 Fortunately, this turned out to be a good move. Machine Learning has continued to evolve rapidly over the last decade; 
-just look at where we are now with generative models and large language models (LLMs), and in the 3 years since 
+just look at where we are now with generative and large language models (LLMs), and in the 3 years since 
 the original open-source model was developed there had been many advances made in terms of model architectures and efficiency.
 
 When deploying ML onto an edge device, there is a trade-off between model performance (how good the model is at its job) and device performance. 
 Generally, larger models with more parameters are more likely to be better at whatever 
 they're trained to do, given sufficient training data. However, embedding large models over a certain size, in 
-terms of parameters, onto edge devices is challenging, due to hardware limitations such as compute power and battery life.
+terms of parameters, onto edge devices is challenging because of hardware limitations such as compute power and battery life.
 This is likely to be an interesting conundrum faced by people trying to embed LLMs and generative models onto edge devices. 
 
 Fortunately, at the time of development, several model architectures had been purposely designed 
@@ -87,35 +93,67 @@ You can find examples of some of the helper scripts that enabled me to do this [
 
 When training models using Sagemaker, you have 3 different options to choose from: 
 
-Use the built-in algorithms.
+* Use the built-in algorithms.
 
-Use bespoke code that can be run in a Sagemaker provided container.
+* Use bespoke code that can be run in a Sagemaker provided container.
 
-Provide your own bespoke code and docker image.
+* Provide your own bespoke code and docker image.
 
 I decided to go for the second approach, using my own TensorFlow code in the Sagemaker provided TensorFlow container. 
-There some a few nuances to this approach, but generally I found it to be more straight forward than the other two options. 
-Using my code and a Sagemaker provided TensorFlow container offered a good trade-off between flexibility and ease. Historically, 
+There some a few nuances to this approach, but generally I found it to be more straight-forward than the other two options. 
+Using my code and a Sagemaker provided TensorFlow container offered a good trade-off between flexibility and speed. Historically, 
 I've found the built-in algorithms to be a bit awkward to configure and there was no need to create my own docker image
-because Sagemaker had me covered with the ones they provide. 
+because Sagemaker had me covered with the containers they provide. 
+
+```python
+from sagemaker import get_execution_role
+from sagemaker.tensorflow import TensorFlow
+
+role = get_execution_role()
+
+training_data_uri = 's3://<path to training data>>'
+validation_data_uri = 's3://<path to validation data>'
+fit_input = {'train': training_data_uri, 'validation': validation_data_uri}
+
+hyperparameters = {
+    'batch-size': 32,
+    'fine-tune-learning-rate': 1.0e-04,
+    'fine-tune-epochs': 1,
+    'fine-tune-layer': 100,
+}
+
+metric_definitions = [
+    {'Name': 'validation accuracy', 'Regex': 'val_accuracy: ([0-9\\.]+)'},
+    {'Name': 'training accuracy', 'Regex': ' accuracy: ([0-9\\.]+)'},
+]
+
+tf_estimator = TensorFlow(
+    entry_point='<name of your training script>.py',
+    role=role,
+    instance_count=1,
+    instance_type='ml.p3.2xlarge',
+    framework_version='2.4.1',
+    py_version='py37',
+    hyperparameters=hyperparameters,
+    metric_definitions=metric_definitions
+)
+
+tf_estimator.fit(fit_input)
+```
+__Template for creating a single training run on SageMaker.__
 
 [sagemaker-repo]:https://github.com/BenhamOT/aws-sagemaker-custom-training-example
 
 There are a variety of benefits that come from using Sagemaker, although they do come with a potentially sizeable price tag. 
 First, you have access to the best hardware (GPUs), which is required for training most of the larger models we see around nowadays. 
-Additionally, training can also be easily distributed across multiple GPUs, dramatically reducing training times.
-This feature was found especially helpful since the model I was training would take about 10 longer to train locally. 
-Hyperparameter tuning is also easier using Sagemaker; you can specify the total number of trainings runs
-and the number of runs to run in parallel. Sagemaker will then use it's built-in bayesian optimisation algorithm 
-to intelligently search for the most optimal combination of parameters based on a metric you provide.
+Additionally, training can be easily distributed across multiple GPUs, dramatically reducing training time.
+This feature was especially helpful because the model I was training would take about 10 times longer to train locally,
+even though it was relatively small. Hyperparameter tuning is also easier using Sagemaker; you can 
+specify the total number of trainings runs and the number of runs to run in parallel. Sagemaker will then
+use it's built-in bayesian optimisation algorithm to intelligently search for the most optimal 
+combination of parameters based on a metric you provide.
 
 ### The end
 
-3 years on and this application is still running in production, classifying screenshots.
-
-
-TODO
-
-images
-
-why embed the model into the app instead of hosting it online?
+3 years on and this application is still running in production, classifying screenshots. If you enjoyed this post, or if 
+you didn't, and would like to read future ones, feel free to follow me on LinkedIn.
