@@ -62,7 +62,7 @@ corresponding business implications. In this case, it was important that everyon
 a false positive rate of 1% meant that out of every 100,000 'negative' images, the model 
 would still incorrectly classify approximately 1000 of them as positive. 
 
-![image info](docs/assets/images/mobile-screenshots.png)
+![Screen segmentation](docs/assets/images/mobile-screenshots.png)
 *This image shows how the screenshots were segmented as part of the image pre-processing. This was done to 
 ensure that the images passed to the model maintained their aspect ratio after they were resized. Many models 
 expect the images pass to them to be a fixed high and width (in terms of pixels) and therefore resizing is a 
@@ -156,7 +156,7 @@ combination of parameters based on a metric you provide.
 ### The end
 
 The custom mobilenet model, trained using a mixture of mobile screenshot and non screenshot data, performed well enough
-overall for the app to installed on hundreds of active devices. We did propose a second phase to the project which would 
+overall for the app to be installed on hundreds of active devices. We did propose a second phase to the project which would 
 have seen us create a cloud hosted solution for further image analysis and incorporate more MlOps, such as automatic 
 model retraining, into our build pipelines. This phase never went ahead but, on the bright side, the app is still
 running in production, classifying screenshots. If you enjoyed this post, or if 
