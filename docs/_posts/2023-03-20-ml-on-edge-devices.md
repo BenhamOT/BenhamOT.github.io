@@ -63,10 +63,10 @@ a false positive rate of 1% meant that out of every 100,000 'negative' images, t
 would still incorrectly classify approximately 1000 of them as positive. 
 
 ![image info](../assets/images/mobile-screenshots.png)
-__This image shows how the screenshots were segmented as part of the image pre-processing. This was done to 
+*This image shows how the screenshots were segmented as part of the image pre-processing. This was done to 
 ensure that the images passed to the model maintained their aspect ratio after they were resized. Many models 
 expect the images pass to them to be a fixed high and width (in terms of pixels) and therefore resizing is a 
-common pre-processing step.__
+common pre-processing step.*
 
 ### Phase 3: Custom Training
 
@@ -140,7 +140,7 @@ tf_estimator = TensorFlow(
 
 tf_estimator.fit(fit_input)
 ```
-__Template for creating a single training run on SageMaker.__
+*Template for creating a single training run on SageMaker.*
 
 [sagemaker-repo]:https://github.com/BenhamOT/aws-sagemaker-custom-training-example
 
