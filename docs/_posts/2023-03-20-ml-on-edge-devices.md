@@ -42,11 +42,11 @@ Once I managed to overcome the model conversion hurdle and had a nice compressed
 into the app and started UAT testing. We quickly discovered that the model was performing poorly 
 compared to the benchmarks we had established.
 
-My first lesson learned: In any ML project, it's best to source training data that matches the data the 
+> My first lesson learned: In any ML project, it's best to source training data that matches the data the 
 model will see when deployed to production. This sounds obvious in hindsight, but at the time I didn't 
 realise it was necessary to use mobile phone screenshots as part of the training data to achieve 
 reasonable results. This turned out to be a very naive assumption. The concept of a mismatch between your 
-training data and the data that the model is exposed to in production is known in the MLOps world as __data drift__.
+training data and the data that the model is exposed to in production is known in the MlOps world as *data drift*.
 
 ### Phase 2: Transfer Learning
 
@@ -56,13 +56,13 @@ such a way that any screenshots classified as positive would be securely sent to
 an internet connection could be established. However, they were receiving too many false positives, and 
 the team responsible for assessing the images couldn't keep up, especially as the number of active devices increased.
 
-An overarching lesson I learned from this project is that when delivering anything involving ML, it's crucial 
+> An overarching lesson I learned from this project is that when delivering anything involving ML, it's crucial 
 that everyone is on the same page regarding the performance of the model and the 
 corresponding business implications. In this case, it was important that everyone understood 
 a false positive rate of 1% meant that out of every 100,000 'negative' images, the model 
 would still incorrectly classify approximately 1000 of them as positive. 
 
-![image info](../assets/images/mobile-screenshots.png)
+![image info](docs/assets/images/mobile-screenshots.png)
 *This image shows how the screenshots were segmented as part of the image pre-processing. This was done to 
 ensure that the images passed to the model maintained their aspect ratio after they were resized. Many models 
 expect the images pass to them to be a fixed high and width (in terms of pixels) and therefore resizing is a 
@@ -72,19 +72,19 @@ common pre-processing step.*
 
 Based on the need to further reduce the false positive rate, I decided to train a new bespoke model. 
 Fortunately, this turned out to be a good move. Machine Learning has continued to evolve rapidly over the last decade; 
-just look at where we are now with generative and large language models (LLMs), and in the 3 years since 
+just look at where we are now with generative models, and in the 3 years since 
 the original open-source model was developed there had been many advances made in terms of model architectures and efficiency.
 
 When deploying ML onto an edge device, there is a trade-off between model performance (how good the model is at its job) and device performance. 
 Generally, larger models with more parameters are more likely to be better at whatever 
 they're trained to do, given sufficient training data. However, embedding large models over a certain size, in 
-terms of parameters, onto edge devices is challenging because of hardware limitations such as compute power and battery life.
-This is likely to be an interesting conundrum faced by people trying to embed LLMs and generative models onto edge devices. 
+terms of parameters, onto edge devices is challenging, because of hardware limitations such as compute power and battery life.
+This is likely to be an interesting conundrum faced by people trying to embed large language models and other generative models onto edge devices. 
 
 Fortunately, at the time of development, several model architectures had been purposely designed 
 for mobile devices. After some experimentation, MobileNetV3, from the [mobilenet][mobilenet] family, emerged as the winner. 
-Although there are better options nowadays, MobileNetV3 offered the best trade off between model 
-and device performance at the time. I trained the MobileNetV3 model on AWS Sagemaker, using Sagemaker studio. 
+Although there are better options nowadays, at the time MobileNetV3 offered the best trade off between model 
+and device performance. I trained the MobileNetV3 model on AWS Sagemaker, using Sagemaker studio. 
 You can find examples of some of the helper scripts that enabled me to do this [here][sagemaker-repo].
 
 [mobilenet]:https://keras.io/api/applications/mobilenet/
@@ -145,7 +145,7 @@ tf_estimator.fit(fit_input)
 [sagemaker-repo]:https://github.com/BenhamOT/aws-sagemaker-custom-training-example
 
 There are a variety of benefits that come from using Sagemaker, although they do come with a potentially sizeable price tag. 
-First, you have access to the best hardware (GPUs), which is required for training most of the larger models we see around nowadays. 
+First, you have access to the best hardware (GPUs), which are required for training most of the larger models we see around nowadays. 
 Additionally, training can be easily distributed across multiple GPUs, dramatically reducing training time.
 This feature was especially helpful because the model I was training would take about 10 times longer to train locally,
 even though it was relatively small. Hyperparameter tuning is also easier using Sagemaker; you can 
@@ -155,5 +155,9 @@ combination of parameters based on a metric you provide.
 
 ### The end
 
-3 years on and this application is still running in production, classifying screenshots. If you enjoyed this post, or if 
+The custom mobilenet model, trained using a mixture of mobile screenshot and non screenshot data, performed well enough
+overall for the app to installed on hundreds of active devices. We did propose a second phase to the project which would 
+have seen us create a cloud hosted solution for further image analysis and incorporate more MlOps, such as automatic 
+model retraining, into our build pipelines. This phase never went ahead but, on the bright side, the app is still
+running in production, classifying screenshots. If you enjoyed this post, or if 
 you didn't, and would like to read future ones, feel free to follow me on LinkedIn.
