@@ -157,7 +157,7 @@ combination of parameters based on a metric you provide.
 
 The custom mobilenet model, trained using a mixture of mobile screenshot and non screenshot data, performed well enough
 overall for the app to be installed on hundreds of active devices. We did propose a second phase to the project which would 
-have seen us create a cloud hosted solution for further image analysis and incorporate more MlOps, such as automatic 
-model retraining, into our build pipelines. This phase never went ahead but, on the bright side, the app is still
-running in production, classifying screenshots. If you enjoyed this post, or if 
+have seen us create a cloud hosted solution, for further image analysis, and incorporate more MlOps, such as automatic 
+model retraining, into our build pipelines. This phase never went ahead but on the bright side, the app is still
+running in production and classifying screenshots. If you enjoyed this post, or if 
 you didn't, and would like to read future ones, feel free to follow me on LinkedIn.
