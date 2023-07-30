@@ -62,7 +62,7 @@ corresponding business implications. In this case, it was important that everyon
 a false positive rate of 1% meant that out of every 100,000 'negative' images, the model 
 would still incorrectly classify approximately 1000 of them as positive. 
 
-![Screen segmentation](docs/assets/images/mobile-screenshots.png)
+![Screen segmentation](mobile-screenshots.png)
 *This image shows how the screenshots were segmented as part of the image pre-processing. This was done to 
 ensure that the images passed to the model maintained their aspect ratio after they were resized. Many models 
 expect the images pass to them to be a fixed high and width (in terms of pixels) and therefore resizing is a 
