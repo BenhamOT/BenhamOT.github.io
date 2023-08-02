@@ -4,6 +4,7 @@ title:  ML at the edge!
 date:   2023-03-20 20:48:03 +0000
 categories: computer vision machine learning edge devices
 tags: computer-vision machine-learning mlops
+image: /assets/images/mobile-screenshots.png
 ---
 
 ### Intro
@@ -42,11 +43,11 @@ Once I managed to overcome the model conversion hurdle and had a nice compressed
 into the app and started UAT testing. We quickly discovered that the model was performing poorly 
 compared to the benchmarks we had established.
 
-> My first lesson learned: In any ML project, it's best to source training data that matches the data the 
-model will see when deployed to production. This sounds obvious in hindsight, but at the time I didn't 
-realise it was necessary to use mobile phone screenshots as part of the training data to achieve 
-reasonable results. This turned out to be a very naive assumption. The concept of a mismatch between your 
-training data and the data that the model is exposed to in production is known in the MlOps world as *data drift*.
+> My first lesson learned: In any ML project, it's best to source training data that matches the data the
+> model will see when deployed to production. This sounds obvious in hindsight, but at the time I didn't
+> realise it was necessary to use mobile phone screenshots as part of the training data to achieve
+> reasonable results. This turned out to be a very naive assumption. The concept of a mismatch between your
+> training data and the data that the model is exposed to in production is known in the MlOps world as *data drift*.
 
 ### Phase 2: Transfer Learning
 
@@ -56,16 +57,13 @@ such a way that any screenshots classified as positive would be securely sent to
 an internet connection could be established. However, they were receiving too many false positives, and 
 the team responsible for assessing the images couldn't keep up, especially as the number of active devices increased.
 
-> An overarching lesson I learned from this project is that when delivering anything involving ML, it's crucial 
-that everyone is on the same page regarding the performance of the model and the 
-corresponding business implications. In this case, it was important that everyone understood 
-a false positive rate of 1% meant that out of every 100,000 'negative' images, the model 
-would still incorrectly classify approximately 1000 of them as positive. 
+> An overarching lesson I learned from this project is that when delivering anything involving ML, it's crucial
+> that everyone is on the same page regarding the performance of the model and the
+> corresponding business implications. In this case, it was important that everyone understood
+> a false positive rate of 1% meant that out of every 100,000 'negative' images, the model
+> would still incorrectly classify approximately 1000 of them as positive. 
 
-<img src="mobile-screenshots.png"
-      alt="screenshot segmentation"
-      style="float: left; margin-right: 10px;" 
- />
+![]({{page.image | reletive_url }})
 *This image shows how the screenshots were segmented as part of the image pre-processing. This was done to 
 ensure that the images passed to the model maintained their aspect ratio after they were resized. Many models 
 expect the images pass to them to be a fixed high and width (in terms of pixels) and therefore resizing is a 
@@ -78,11 +76,11 @@ Fortunately, this turned out to be a good move. Machine Learning has continued t
 just look at where we are now with generative models, and in the 3 years since 
 the original open-source model was developed there had been many advances made in terms of model architectures and efficiency.
 
-> When deploying ML onto an edge device, there is a trade-off between model performance (how good the model is at its job) and device performance. 
-Generally, larger models with more parameters are more likely to be better at whatever 
-they're trained to do, given sufficient training data. However, embedding large models over a certain size, in 
-terms of parameters, onto edge devices is challenging. This is down to hardware limitations such as compute power, memory and battery life.
-This is likely to be an interesting conundrum faced by people trying to embed large language models and other generative models onto edge devices. 
+> When deploying ML onto an edge device, there is a trade-off between model performance (how good the model is at its job) and device performance.
+> Generally, larger models with more parameters are more likely to be better at whatever
+> they're trained to do, given sufficient training data. However, embedding large models over a certain size, in
+> terms of parameters, onto edge devices is challenging. This is down to hardware limitations such as compute power, memory and battery life.
+> This is likely to be an interesting conundrum faced by people trying to embed large language models and other generative models onto edge devices. 
 
 Fortunately, at the time of development, several model architectures had been purposely designed 
 for mobile devices. After some experimentation, MobileNetV3, from the [mobilenet][mobilenet] family, emerged as the winner. 
