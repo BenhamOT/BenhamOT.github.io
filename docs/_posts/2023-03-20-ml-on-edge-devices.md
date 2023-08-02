@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  ML at the edge!
-date:   2023-03-20 20:48:03 +0000
+title:  ML at the edge
+date:   2023-08-03 20:48:03 +0000
 categories: computer vision machine learning edge devices
 tags: computer-vision machine-learning mlops
 ---
@@ -62,7 +62,7 @@ corresponding business implications. In this case, it was important that everyon
 a false positive rate of 1% meant that out of every 100,000 'negative' images, the model 
 would still incorrectly classify approximately 1000 of them as positive. 
 
-![Screen segmentation](mobile-screenshots.png)
+![Screen segmentation] (mobile-screenshots.png)
 *This image shows how the screenshots were segmented as part of the image pre-processing. This was done to 
 ensure that the images passed to the model maintained their aspect ratio after they were resized. Many models 
 expect the images pass to them to be a fixed high and width (in terms of pixels) and therefore resizing is a 
@@ -75,10 +75,10 @@ Fortunately, this turned out to be a good move. Machine Learning has continued t
 just look at where we are now with generative models, and in the 3 years since 
 the original open-source model was developed there had been many advances made in terms of model architectures and efficiency.
 
-When deploying ML onto an edge device, there is a trade-off between model performance (how good the model is at its job) and device performance. 
+> When deploying ML onto an edge device, there is a trade-off between model performance (how good the model is at its job) and device performance. 
 Generally, larger models with more parameters are more likely to be better at whatever 
 they're trained to do, given sufficient training data. However, embedding large models over a certain size, in 
-terms of parameters, onto edge devices is challenging, because of hardware limitations such as compute power and battery life.
+terms of parameters, onto edge devices is challenging. This is down to hardware limitations such as compute power, memory and battery life.
 This is likely to be an interesting conundrum faced by people trying to embed large language models and other generative models onto edge devices. 
 
 Fortunately, at the time of development, several model architectures had been purposely designed 
@@ -100,7 +100,7 @@ When training models using Sagemaker, you have 3 different options to choose fro
 * Provide your own bespoke code and docker image.
 
 I decided to go for the second approach, using my own TensorFlow code in the Sagemaker provided TensorFlow container. 
-There some a few nuances to this approach, but generally I found it to be more straight-forward than the other two options. 
+There are a few nuances to this option, but generally I found it to be more straight-forward than the other two. 
 Using my code and a Sagemaker provided TensorFlow container offered a good trade-off between flexibility and speed. Historically, 
 I've found the built-in algorithms to be a bit awkward to configure and there was no need to create my own docker image
 because Sagemaker had me covered with the containers they provide. 
@@ -144,7 +144,7 @@ tf_estimator.fit(fit_input)
 
 [sagemaker-repo]:https://github.com/BenhamOT/aws-sagemaker-custom-training-example
 
-There are a variety of benefits that come from using Sagemaker, although they do come with a potentially sizeable price tag. 
+There are a variety of benefits you get from using Sagemaker, although they do come with a potentially sizeable price tag. 
 First, you have access to the best hardware (GPUs), which are required for training most of the larger models we see around nowadays. 
 Additionally, training can be easily distributed across multiple GPUs, dramatically reducing training time.
 This feature was especially helpful because the model I was training would take about 10 times longer to train locally,
