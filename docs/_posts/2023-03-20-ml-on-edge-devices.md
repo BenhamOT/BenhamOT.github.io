@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  ML at the edge!
-date:   2023-08-02 20:48:03 +000
+date:   2023-03-20 20:48:03 +0000
 categories: computer vision machine learning edge devices
 tags: computer-vision machine-learning mlops
 ---
