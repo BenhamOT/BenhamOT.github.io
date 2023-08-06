@@ -34,9 +34,9 @@ store a large backlog of images to send to a cloud hosted model.
 [pytorch]: https://pytorch.org/ 
 [tensorflow]: https://www.tensorflow.org/ 
 
-The process of converting the original model into the tflite format was surprisingly painful. 
+The process of converting the original model into the required tflite format was surprisingly painful. 
 The open-source model was developed using the legacy tf 1.x API, and there isn't the same level of
-support for older tf versions. However, with the current tf 2.x API, it's fairly straightforward to 
+support for older tf versions. However, with the current tf 2.x API it's fairly straightforward to 
 use the conversion API or command-line tool.
 
 Once I managed to overcome the model conversion hurdle and had a nice compressed tflite file, we embedded the model
