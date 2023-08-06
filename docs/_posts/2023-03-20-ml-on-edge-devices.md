@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  ML at the edge!
-date:   2023-08-06 20:48:03 +0000
+date:   2023-03-20 20:48:03 +0000
 categories: computer vision machine learning edge devices
 tags: computer-vision machine-learning mlops
 image: /assets/images/mobile-screenshots.png
@@ -20,8 +20,8 @@ built to monitor what people were doing on specific phones.
 ### Phase 1: Model Embedding
 
 I'd now consider myself to be a [PyTorch][pytorch] convert (a topic for another day), however, this project was developed
-using [TensorFlow][tensorflow] (tf) and TensorFlow Lite. Initially, I attempted to use a pre-trained open-source model that I found online.
-This is where TensorFlow Lite [tflite] came in handy; it enables you to convert a 
+using [TensorFlow][tensorflow] (tf) and TensorFlow Lite. Initially, I attempted to take a pre-trained open-source model that I found online 
+and embed it into the app. This is where TensorFlow Lite [tflite] came in handy; it enables you to convert a 
 model into a compressed .tflite file that can then be embedded onto edge devices.
 
 Why was the model embedded into the app instead of hosted in the cloud? There are a few reasons why
