@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Is Rust a language of the future?
-date:   2023-07-30 20:48:03 +0000
+date:   2023-11-30 20:48:03 +0000
 categories: rust programming
 tags: rust programming
 ---
