@@ -3,8 +3,10 @@ layout: post
 title:  ML at the edge!
 date:   2023-03-20 20:48:03 +0000
 categories: computer vision machine learning edge devices
+excerpt_image: /assets/images/ml-at-the-edge.png
 tags: computer-vision machine-learning mlops
 image: /assets/images/mobile-screenshots.png
+
 ---
 
 ### Intro
