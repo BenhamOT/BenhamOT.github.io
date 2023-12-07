@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Is Rust a language of the future?
-date:   2023-12-07 20:48:03 +0000
+date:   2023-12-06 20:48:03 +0000
 categories: rust programming data engineering
 banner:
   image: https://github.com/BenhamOT/BenhamOT.github.io/blob/main/docs/assets/images/rust-crab.png
