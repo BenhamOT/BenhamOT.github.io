@@ -183,7 +183,7 @@ written in Rust with a python interface or SDK.
 
 Is it likely to change a data professionals day to day? Probably not dramatically. 
 Given the fairly steep learning curve and the challenges around fast prototyping, I think we'll continue to see python dominate
-for the most part when it comes to writing code day to day. However, I'd say there's a good changes that some new 
+for the most part when it comes to writing code day to day. However, I'd say there's a good chance that some new 
 data processing frameworks and libraries will continue popping up, all powered by Rust (think 
 spark but written in Rust instead of Java). Watch this space. 
 
