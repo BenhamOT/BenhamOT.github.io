@@ -160,8 +160,8 @@ written in Rust.
 [rust-aws-sdk]: https://docs.aws.amazon.com/sdk-for-rust/latest/dg/getting-started.html
 
 Rust is also starting to make waves in the data industry. Anyone that's ever worked in the data space, 
-whether that be an analyst, scientist or engineer, is likely to have come across the python library, Pandas.
-[Polars][polars] is a new library, written in Rust with a python interface, that's slowly eating into the Pandas market share.
+whether that be as an analyst, scientist or engineer, is likely to have come across the python library, Pandas.
+[Polars][polars] is a new library, written in Rust with a python interface, that's quickly eating into the Pandas market share.
 Polars is really fast, memory efficient and arguably (I'm not sure there's much of an argument) more enjoyable to use than pandas. 
 
 The core of [Pydantic][pydantic], the python data validation library has recently been re-written in Rust and, according to the
