@@ -16,7 +16,7 @@ by exploring its adoption generally, how it's used in the data space and my futu
 
 ### Introduction:
 
-About 9 months ago I had separated conversations with a couple of mates I used to work with. Coincidentally,
+About 9 months ago I had separate conversations with a couple of mates I used to work with. Coincidentally,
 both of them were telling me about this programming language, Rust, they’d recently become interested in.
 Slightly skeptical at first, I started doing my own research and pretty quickly I was sold. Having spent the vast
 majority of my professional career almost exclusively using Python, I was in the market for learning another language.
